@@ -1,16 +1,44 @@
 import logo from "./logo.svg";
 import "./App.css";
+import React from 'react';
+import Button from './Button';
+
+function Button(props) {
+  return <button onClick={props.onTalk}>Click me!</button>;
+}
+
+export default Button;
+
+
+function Talker(){
+  function handleTalk() {
+    let speech = '';
+    for (let i = 0; i < 10000; i++) {
+      speech += 'blah ';
+    }
+    alert(speech);
+  }
+  return <Button onTalk={handleTalk} />;
+}
+
+export default Talker;
 
 function Header(props) {
   console.log("props", props.title);
   return (
     <header>
       <h1>
-        <a href="/">{props.title}</a>
+        <a href="/" onClick={(event)=>{
+          event.preventDefault();
+          props.onChangeMode();
+        }}>{props.title}</a>
       </h1>
     </header>
   );
 }
+
+export default Header;
+
 
 function Nav(props) {
   const lis = [];
@@ -18,7 +46,10 @@ function Nav(props) {
     let t = props.topics[i];
     lis.push(
       <li key={t.id}>
-        <a href={"/read/" + t.id}>{t.title}</a>
+        <a id={t.id} href={"/read/" + t.id} onClick={event=>{
+          event.preventDefault();
+          props.onChangeMode(event.target.id);
+        }}>{t.title}</a>
       </li>
     );
   }
@@ -29,6 +60,9 @@ function Nav(props) {
   );
 }
 
+export default Nav;
+
+
 function Article(props) {
   return (
     <article>
@@ -37,6 +71,9 @@ function Article(props) {
     </article>
   );
 }
+
+
+export default Article;
 
 function App() {
   const topics = [
@@ -47,9 +84,14 @@ function App() {
 
   return (
     <div className="App">
-      <Header title="WEB"></Header>
-      <Nav topics={topics}></Nav>
+      <Header title="WEB" onChangeMode={()=>{
+        alert('Header')
+      }}></Header>
+      <Nav topics={topics} onChangeMode={(id)=>{
+        alert(id)
+      }}></Nav>
       <Article title="Welcome" body="Hello, Web"></Article>
+      <Talker></Talker>
     </div>
   );
 }
